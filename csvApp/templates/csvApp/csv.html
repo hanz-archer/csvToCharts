@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to Charts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    
+<button data-drawer-target="cta-button-sidebar" data-drawer-toggle="cta-button-sidebar" aria-controls="cta-button-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+    <span class="sr-only">Open sidebar</span>
+    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+    </svg>
+ </button>
+ 
+ <aside id="cta-button-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <ul class="space-y-2 font-medium">
+            <!-- Dropdown for Recently Added Files and Generated Charts -->
+            <li>
+                <button class="flex items-center p-2 w-full text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group" id="dropdown-recent">
+                    <span class="ms-3">Recently Added</span>
+                    <svg class="w-5 h-5 ml-auto text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 11.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <ul class="hidden mt-2 space-y-2" id="dropdown-menu">
+                    <!-- Links for recently added CSV files -->
+                    <li>
+                        <strong>Recently Added CSVs:</strong>
+                        {% for file in csv_files %}
+                        <a href="{{ file.url }}" class="block p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">{{ file.name }}</a>
+                        {% endfor %}
+                    </li>
+                    <!-- Links for generated charts -->
+                    <li>
+                        <strong>Generated Charts:</strong>
+                        {% for chart in chart_files %}
+                        <a href="{{ chart.url }}" class="block p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">{{ chart.name }}</a>
+                        {% endfor %}
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div id="dropdown-cta" class="p-4 mt-6 rounded-lg bg-blue-50 dark:bg-blue-900" role="alert">
+            <div class="flex items-center mb-3">
+                <span class="bg-orange-100 text-orange-800 text-sm font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-orange-200 dark:text-orange-900">Way Lingaw</span>
+                <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-blue-50 inline-flex justify-center items-center w-6 h-6 text-blue-900 rounded-lg focus:ring-2 focus:ring-blue-400 p-1 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-400 dark:hover:bg-blue-800" data-dismiss-target="#dropdown-cta" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="mb-3 text-sm text-blue-800 dark:text-blue-400">
+                This is just a practice project. -Hanz
+            </p>
+        </div>
+    </div>
+</aside>
+ 
+ <div class="p-4 sm:ml-64">
+    <h1 class="text-2xl font-medium">Convert CSV to Charts</h1>
+    <br>
+    <div class="flex flex-col items-center justify-center w-full space-y-6">
+        <form method="POST" enctype="multipart/form-data" class="w-full max-w-4xl">
+            {% csrf_token %}
+            <div class="p-4">
+                <h1 class="text-2xl font-medium">Convert CSV to Charts</h1>
+                <br>
+                <div class="flex flex-col items-center justify-center w-full space-y-6">
+                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-80 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                        </div>
+                        <input id="dropzone-file" type="file" name="csv_file" class="hidden" onchange="updateLabel()">
+                    </label>
+                    
+                    <p id="upload-status" class="text-green-500 font-medium"></p>
+        
+                    <div class="w-full">
+                        <label for="chart-type" class="block mb-2 text-sm font-medium text-gray-700">Select Chart Type</label>
+                        <select id="chart-type" name="chart_type" class="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg">
+                            <option value="bar">Bar Chart</option>
+                            <option value="line">Line Chart</option>
+                            <option value="pie">Pie Chart</option>
+                            <option value="scatter">Scatter Plot</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="flex justify-center space-x-4">
+                    <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600">Generate Chart</button>
+                    <button type="reset" class="bg-red-500 text-white py-2 px-6 rounded hover:bg-red-600">Reset</button>
+                </div>
+            </div>
+        </form>
+        
+        <script>
+            function updateLabel() {
+                const fileInput = document.getElementById('dropzone-file');
+                const statusLabel = document.getElementById('upload-status');
+                if (fileInput.files.length > 0) {
+                    statusLabel.textContent = 'File uploaded: ' + fileInput.files[0].name;
+                } else {
+                    statusLabel.textContent = '';
+                }
+            }
+        </script>
+        
+        <br>
+        <h1 class="text-2xl font-medium">Result</h1>
+        
+        {% if chart_url %}
+            <div class="flex items-center justify-center w-full h-96 bg-gray-100 border-2 border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                <img src="{{ chart_url }}" alt="Generated Chart" class="max-w-full max-h-full">
+            </div>
+        {% else %}
+            <div class="flex items-center justify-center w-full h-96 bg-gray-100 border-2 border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                <p class="text-gray-500 dark:text-gray-400">Your chart will be displayed here.</p>
+            </div>
+        {% endif %}
+        
+        {% if error %}
+            <p class="text-red-500 mt-4">{{ error }}</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+<script>
+    document.getElementById('dropdown-recent').addEventListener('click', function() {
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        dropdownMenu.classList.toggle('hidden');
+    });
+</script>
+</html>
