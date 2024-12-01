@@ -66,7 +66,7 @@
                             <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                         </div>
                         <input id="dropzone-file" type="file" name="csv_file" class="hidden" onchange="updateLabel()">
-                    </label>
+                    </label>                                     
                     
                     <p id="upload-status" class="text-green-500 font-medium"></p>
         
@@ -172,4 +172,40 @@
     </script>
     {% endfor %}
 {% endif %}
+
+<script>
+    function updateLabel() {
+        const fileInput = document.getElementById('dropzone-file');
+        const uploadLabel = fileInput.parentElement; // Access the label element
+        const statusLabel = document.getElementById('upload-status');
+        
+        if (fileInput.files.length > 0) {
+            statusLabel.textContent = 'File uploaded: ' + fileInput.files[0].name;
+            uploadLabel.style.borderColor = 'green'; // Change border color to green
+        } else {
+            statusLabel.textContent = '';
+            uploadLabel.style.borderColor = '#d1d5db'; // Reset border color to default (gray)
+        }
+    }
+</script>
+
+<script>
+    function updateLabel() {
+        const fileInput = document.getElementById('dropzone-file');
+        const textElement = fileInput.parentElement.querySelector('p'); // Select the <p> inside the label
+        
+        if (fileInput.files.length > 0) {
+            textElement.textContent = 'Uploaded file: ' + fileInput.files[0].name; // Update with file name
+            textElement.style.color = 'green'; // Change text color to green
+            textElement.style.fontWeight = 'bold'; // Make text bold
+            fileInput.parentElement.style.borderColor = 'green'; // Change border color to green
+        } else {
+            textElement.textContent = 'Click to upload or drag and drop'; // Reset text
+            textElement.style.color = '#6b7280'; // Reset text color to gray
+            textElement.style.fontWeight = 'normal'; // Reset text weight
+            fileInput.parentElement.style.borderColor = '#d1d5db'; // Reset border color
+        }
+    }
+</script>
+
 </html>
